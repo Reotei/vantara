@@ -1,0 +1,12 @@
+flowchart TB
+  A["Raw transactions"] --> B["Clean: dedupe, price rule,<br/>reversed entry errors, admin codes"]
+  B --> C{"Validation<br/>passes?"}
+  C -- no --> X["Fail loudly with<br/>violation report"]
+  C -- yes --> D["Snapshots at cutoffs<br/>churn: end − 90d · CLV: end − 365d · live: end"]
+  D --> E["70/15/15 stratified split"]
+  E --> F["5-fold CV random search<br/>(train only)"]
+  F --> G["Threshold for recall ≥ 70%<br/>(validation)"]
+  G --> H["Test set touched once<br/>→ comparison table"]
+  H --> I["Production model = best tree ensemble"]
+  I --> J["Score customers + SHAP + segments<br/>→ PostgreSQL"]
+  J --> K["API + dashboard"]

@@ -1,0 +1,54 @@
+erDiagram
+  customers ||--o{ transactions : places
+  customers ||--|| predictions : "scored as"
+  segments ||--o{ predictions : groups
+  customers {
+    bigint customer_id PK
+    text country
+    float recency_days
+    float frequency
+    float monetary_total
+    float engagement_score
+    date first_purchase
+    date last_purchase
+    float cat_shares "one column per category"
+  }
+  transactions {
+    bigint customer_id FK
+    text invoice
+    timestamp invoice_date
+    text month
+    text stock_code
+    text description
+    text category
+    int quantity
+    float price
+    float revenue
+    bool is_return
+    bool is_admin
+  }
+  predictions {
+    bigint customer_id PK
+    float churn_prob
+    text risk_band
+    float clv_pred
+    float revenue_at_risk
+    float next_purchase_prob
+    bool is_anomaly
+    text segment FK
+    float pca_x
+    float pca_y
+    json shap
+    text explanation
+    json recommendations
+    float prev_churn_prob
+    date scored_at
+  }
+  segments {
+    text segment PK
+    int size
+    float churn_rate
+    float avg_clv
+    float revenue_at_risk
+    text action
+  }

@@ -1,0 +1,30 @@
+[project]
+name = "vantara-customer-intelligence"
+version = "1.0.0"
+description = "Churn, lifetime value and segmentation platform for Vantara Retail."
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = ["notebooks", "frontend"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "BLE"]
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+
+[tool.pytest.ini_options]
+addopts = "-p no:cacheprovider"
+filterwarnings = ["ignore::FutureWarning", "ignore::DeprecationWarning", "ignore::UserWarning"]
+
+[tool.coverage.run]
+source = ["src"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Body", "fastapi.File"]
+
+[tool.ruff.lint.per-file-ignores]
+"docs/build_report.py" = ["E501"]   # HTML report template

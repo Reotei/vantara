@@ -1,0 +1,19 @@
+src/__init__.py                      0      0   100%
+src/data/__init__.py                 0      0   100%
+src/data/clean.py                   56      8    86%   27-34
+src/data/validate.py                16      0   100%
+src/explainability/__init__.py       0      0   100%
+src/explainability/explain.py       63      0   100%
+src/features/__init__.py             0      0   100%
+src/features/build.py               87      0   100%
+src/models/__init__.py               0      0   100%
+src/models/classical.py             53      0   100%
+src/models/deep.py                  49      0   100%
+src/models/evaluate.py              27      0   100%
+src/pipeline.py                    140     14    90%   261-269, 273-279
+src/scoring.py                      87      0   100%
+src/segmentation/__init__.py         0      0   100%
+src/segmentation/cluster.py         47      0   100%
+src/utils/__init__.py               46      0   100%
+TOTAL                              671     22    97%
+29 passed, 1 warning in 48.56s

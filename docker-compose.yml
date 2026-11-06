@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-vantara}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vantara}
+      POSTGRES_DB: ${POSTGRES_DB:-vantara}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-vantara}"]
+      interval: 5s
+      retries: 20
+
+  pipeline:
+    build: .
+    command: ["python", "-m", "src.pipeline", "--if-needed"]
+    environment: &env
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-vantara}:${POSTGRES_PASSWORD:-vantara}@db:5432/${POSTGRES_DB:-vantara}
+      ARTIFACTS_DIR: /app/models_artifacts
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes: &vols
+      - ./data:/app/data
+      - ./models_artifacts:/app/models_artifacts
+    user: root
+    depends_on:
+      db: { condition: service_healthy }
+
+  api:
+    build: .
+    environment:
+      <<: *env
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+    volumes: *vols
+    ports: ["8000:8000"]
+    depends_on:
+      pipeline: { condition: service_completed_successfully }
+
+  frontend:
+    build: ./frontend
+    ports: ["3000:80"]
+    depends_on:
+      api: { condition: service_healthy }
+
+volumes:
+  pgdata:

@@ -1,0 +1,10 @@
+.git
+frontend
+notebooks
+docs
+tests
+data
+models_artifacts
+**/__pycache__
+*.db
+.env

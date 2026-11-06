@@ -1,0 +1,123 @@
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/instrument-sans';
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme {
+  --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', 'Instrument Sans Variable', sans-serif;
+
+  --color-canvas: var(--canvas);
+  --color-panel: var(--panel);
+  --color-panel-strong: var(--panel-strong);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-iris: var(--iris);
+  --color-aqua: var(--aqua);
+  --color-low: var(--risk-low);
+  --color-mid: var(--risk-mid);
+  --color-high: var(--risk-high);
+}
+
+:root {
+  --canvas: #f3f4fa;
+  --panel: rgb(255 255 255 / 0.78);
+  --panel-strong: #ffffff;
+  --line: rgb(22 26 58 / 0.09);
+  --ink: #141733;
+  --ink-2: #4b5075;
+  --ink-3: #6b7093;
+  --iris: #6b58f0;
+  --aqua: #0f9d8c;
+  --risk-low: #129a5f;
+  --risk-mid: #c98500;
+  --risk-high: #d63c43;
+  --glow-a: rgb(107 88 240 / 0.14);
+  --glow-b: rgb(15 157 140 / 0.1);
+  --grid: rgb(22 26 58 / 0.07);
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100;
+  --series-5: #e87ba4; --series-6: #008300; --series-7: #6250d6;
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --canvas: #0c0e1d;
+  --panel: rgb(255 255 255 / 0.035);
+  --panel-strong: #15182c;
+  --line: rgb(255 255 255 / 0.075);
+  --ink: #eceefb;
+  --ink-2: #a6abc8;
+  --ink-3: #7c82a5;
+  --iris: #9d8cff;
+  --aqua: #3dd9c5;
+  --risk-low: #34c78a;
+  --risk-mid: #f5b544;
+  --risk-high: #f2555a;
+  --glow-a: rgb(124 104 255 / 0.2);
+  --glow-b: rgb(61 217 197 / 0.1);
+  --grid: rgb(255 255 255 / 0.06);
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+  --series-5: #d55181; --series-6: #008300; --series-7: #9085e9;
+  color-scheme: dark;
+}
+
+@layer base {
+  html { background: var(--canvas); }
+  body {
+    @apply font-sans text-ink antialiased;
+    min-height: 100vh;
+    background:
+      radial-gradient(1100px 600px at 12% -10%, var(--glow-a), transparent 60%),
+      radial-gradient(900px 500px at 105% 10%, var(--glow-b), transparent 55%),
+      var(--canvas);
+    background-attachment: fixed;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  :focus-visible { outline: 2px solid var(--iris); outline-offset: 2px; border-radius: 6px; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  ::selection { background: color-mix(in oklab, var(--iris) 35%, transparent); }
+}
+
+@layer components {
+  .glass {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 20px 40px -24px rgb(0 0 0 / 0.35);
+  }
+  .spotlight { position: relative; isolation: isolate; }
+  .spotlight::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;
+    opacity: 0; transition: opacity 300ms;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), var(--glow-a), transparent 65%);
+  }
+  .spotlight:hover::before { opacity: 1; }
+  .beam {
+    position: absolute; inset: 0; border-radius: inherit; pointer-events: none; padding: 1px;
+    background: conic-gradient(from var(--beam-angle), transparent 0 78%, var(--iris) 88%, var(--aqua) 94%, transparent 100%);
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    animation: beam 7s linear infinite;
+  }
+  .shimmer {
+    background: linear-gradient(90deg, var(--line) 0%, color-mix(in oklab, var(--ink) 10%, transparent) 50%, var(--line) 100%);
+    background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite;
+  }
+  .gradient-text {
+    background: linear-gradient(100deg, var(--ink) 30%, var(--iris) 70%, var(--aqua));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+}
+
+@property --beam-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes beam { to { --beam-angle: 360deg; } }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+.recharts-wrapper *:focus { outline: none; }

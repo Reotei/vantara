@@ -1,0 +1,16 @@
+flowchart LR
+  RAW["Online Retail II<br/>workbook"] --> CLEAN
+  subgraph P["Processing · python -m src.pipeline"]
+    CLEAN["Load + clean"] --> VAL["Validation gates"] --> FEAT["Point-in-time<br/>features"]
+  end
+  subgraph M["Modelling · models_artifacts/"]
+    MODELS["Churn: 6 classical + ANN + LSTM<br/>CLV regressor · Autoencoder<br/>K-Means / GMM segments<br/>SHAP · LIME · PDP"]
+  end
+  FEAT --> MODELS
+  MODELS --> SCORE["Batch scorer"]
+  SCORE --> PG[("PostgreSQL<br/>customers · transactions<br/>predictions · segments")]
+  subgraph S["Serving"]
+    API["FastAPI :8000"] --> UI["React dashboard<br/>nginx :3000"]
+  end
+  PG --> API
+  MODELS -. "live /predict, batch CSV, LIME" .-> API
